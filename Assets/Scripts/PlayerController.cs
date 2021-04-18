@@ -56,9 +56,13 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             PickupCount++;
-            
+            Speed *= 1.15f;
+
             if (PickupCount >= 13)
+            {
                 WinTextObj.SetActive(true);
+                Speed *= 2f;
+            }
         }
     }
 }
