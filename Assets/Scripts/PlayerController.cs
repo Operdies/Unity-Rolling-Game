@@ -13,8 +13,10 @@ public class PlayerController : MonoBehaviour
     private float movementX;
     private float movementY;
     public float Speed = 0;
+    public float JumpHeight = 0;
     public TextMeshProUGUI countText;
     public GameObject WinTextObj;
+    private bool didJump;
     public ParticleSystem ParticleSystem { get; set; }
     public Quaternion StartRotation { get; set; }
 
@@ -28,7 +30,6 @@ public class PlayerController : MonoBehaviour
         Objective.OnWin += OnWin;
         Objective.OnCollected += () =>
         {
-            Speed *= 1.15f;
             if (this.ParticleSystem.isPlaying)
             {
                 StartCoroutine(nameof(EaseScale));
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator EaseScale()
     {
-        var factor = 2f;
+        var factor = 1.15f;
         var iterations = 10;
         var each = math.pow(factor, 1.0f / iterations);
         var easeDuration = 1.0f; // seconds
@@ -53,7 +54,9 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < iterations; i++)
         {
             var p = this.ParticleSystem.main;
-            
+
+            Speed *= each;
+            JumpHeight *= each;
             this.ParticleSystem.transform.localScale *= each;
             p.gravityModifierMultiplier *= gravityEach;
             p.simulationSpeed *= each;
@@ -69,13 +72,13 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
-        this.ParticleSystem.transform.rotation = StartRotation;
     }
 
     void FixedUpdate()
     {
-        var movement = new Vector3(movementX, 0.0f, movementY);
+        var movement = new Vector3(movementX, this.didJump ? 1.0f * JumpHeight : 0.0f, movementY);
         rb.AddForce(movement * Speed);
+        this.didJump = false;
     }
 
     void OnMove(InputValue movementValue)
@@ -84,6 +87,21 @@ public class PlayerController : MonoBehaviour
         movementX = movement.x;
         movementY = movement.y;
     }
+
+    void OnJump(InputValue v)
+    {
+        this.didJump = this.IsGrounded;
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
+        if (other.collider.CompareTag("Ground"))
+        {
+            this.IsGrounded = true;
+        }
+    }
+
+    private bool IsGrounded { get; set; }
 
     void UpdateCountText()
     {
