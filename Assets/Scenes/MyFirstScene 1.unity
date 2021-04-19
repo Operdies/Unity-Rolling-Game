@@ -1611,7 +1611,7 @@ GameObject:
   - component: {fileID: 935278489}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3300,6 +3300,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 740602824}
     m_Modifications:
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: useUnscaledTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: moveWithTransform
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: ShapeModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: InitialModule.size3D
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: EmissionModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: VelocityModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: InitialModule.rotation3D
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: InitialModule.startSizeY.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: InitialModule.startSizeZ.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: InitialModule.startRotationX.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1714844331570576534, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: InitialModule.randomizeRotationDirection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3494240905222280385, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
       propertyPath: m_Name
       value: Pickup
@@ -3339,6 +3383,18 @@ PrefabInstance:
     - target: {fileID: 3494240905222280390, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7620276666542623012, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 7620276666542623012, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7620276666542623012, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}
+      propertyPath: m_RenderMode
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 571430032b0820b47aacf7f31beee7d3, type: 3}

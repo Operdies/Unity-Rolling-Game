@@ -1,7 +1,9 @@
 using System;
+using DefaultNamespace;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.PlayerLoop;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,30 +13,26 @@ public class PlayerController : MonoBehaviour
     public float Speed = 0;
     public TextMeshProUGUI countText;
     public GameObject WinTextObj;
-
-    private int pickupCount;
-    private int PickupCount
-    {
-        get => pickupCount;
-        set
-        {
-            pickupCount = value;
-            countText.text = $"{PickupCount} / 13";
-        }
-    }
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         WinTextObj.SetActive(false);
-        PickupCount = 0;
         rb = GetComponent<Rigidbody>();
+
+        Objective.OnWin += OnWin;
+        Objective.OnCollected += () =>
+        {
+            Speed *= 1.15f;
+            UpdateCountText();
+        };
+        
+        UpdateCountText();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnWin()
     {
-        
+        WinTextObj.SetActive(true);
+        Speed *= 2f;
     }
 
     void FixedUpdate()
@@ -48,21 +46,10 @@ public class PlayerController : MonoBehaviour
         var movement = movementValue.Get<Vector2>();
         movementX = movement.x;
         movementY = movement.y;
-    }    
-    
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Pickup"))
-        {
-            other.gameObject.SetActive(false);
-            PickupCount++;
-            Speed *= 1.15f;
+    }
 
-            if (PickupCount >= 13)
-            {
-                WinTextObj.SetActive(true);
-                Speed *= 2f;
-            }
-        }
+    void UpdateCountText()
+    {
+        countText.text = $"{Objective.Collected} / {Objective.TotalPickups}";
     }
 }
