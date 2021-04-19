@@ -1,0 +1,7 @@
+Enemies ( coroutines + (s)lerp for simple chasers )
+
+Abilities (jumping, weapons)
+
+Hazards 
+
+Stages (Menu + level select)
