@@ -1,19 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!64 &7814430171497790603
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2272075814713735982}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7262078514411320927, guid: cbfc50be39182a74fbb7dd4920452ddf, type: 3}
 --- !u!114 &2914106053399977913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41,6 +27,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa02ca55f2b681f43ba4d3f7ff8ec181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!135 &6439635191348728685
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2272075814713735982}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.0070332116
+  m_Center: {x: 0.000088830704, y: -0.000051614592, z: 0.00004332617}
 --- !u!1 &3494240905222280385
 GameObject:
   m_ObjectHideFlags: 0

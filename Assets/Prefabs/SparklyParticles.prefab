@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4270207998540322831}
   - component: {fileID: 9154027426641977509}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: SparklyParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -609,7 +609,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 100
     size3D: 0
     rotation3D: 0
     gravityModifier:

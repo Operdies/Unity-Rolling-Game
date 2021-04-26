@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Rotator : MonoBehaviour
 {
+    [Header("Rotation / second in degrees")]
     [Range(-180, 180)] public float x = 0f;
     [Range(-180, 180)] public float y = 0f;
     [Range(-180, 180)] public float z = 0f;

@@ -5,40 +5,47 @@ using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.PlayerLoop;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerController : MonoBehaviour
 {
+    public PauseMenu pauseScreen;
+    
     private Rigidbody rb;
     private float movementX;
     private float movementY;
     public float Speed = 0;
-    public float JumpHeight = 0;
+    public float JumpHeight = 200;
     public TextMeshProUGUI countText;
     public GameObject WinTextObj;
     private bool didJump;
     public ParticleSystem ParticleSystem { get; set; }
     public Quaternion StartRotation { get; set; }
-
     void Start()
-    {
+    {        
         WinTextObj.SetActive(false);
         rb = GetComponent<Rigidbody>();
         ParticleSystem = GetComponentInChildren<ParticleSystem>();
         StartRotation = ParticleSystem.transform.rotation;
 
         Objective.OnWin += OnWin;
-        Objective.OnCollected += () =>
+        Objective.OnRegister += UpdateCountText;
+        Objective.OnCollected += OnCollected;
+
+        UpdateCountText();
+    }
+
+    private void OnCollected()
+    {
+        power += 1;
+        if (this.ParticleSystem.isPlaying)
         {
-            if (this.ParticleSystem.isPlaying)
-            {
-                StartCoroutine(nameof(EaseScale));
-            }
-            else
-                this.ParticleSystem.Play();
-            UpdateCountText();
-        };
-        
+            StartCoroutine(nameof(EaseScale));
+        }
+        else
+            this.ParticleSystem.Play();
+
         UpdateCountText();
     }
 
@@ -69,16 +76,15 @@ public class PlayerController : MonoBehaviour
         WinTextObj.SetActive(true);
         Speed *= 2f;
     }
-
-    private void LateUpdate()
-    {
-    }
+    
 
     void FixedUpdate()
     {
-        var movement = new Vector3(movementX, this.didJump ? 1.0f * JumpHeight : 0.0f, movementY);
-        rb.AddForce(movement * Speed);
-        this.didJump = false;
+        var movement = new Vector3(movementX, 0, movementY) * Speed;
+        movement.y = this.didJump ? JumpHeight : 0.0f;
+        
+        rb.AddForce(movement);
+        this.didJump = false;        
     }
 
     void OnMove(InputValue movementValue)
@@ -93,6 +99,11 @@ public class PlayerController : MonoBehaviour
         this.didJump = this.IsGrounded;
     }
 
+    void OnPause(InputValue v)
+    {
+        pauseScreen.OnPause();
+    }
+
     private void OnCollisionStay(Collision other)
     {
         if (other.collider.CompareTag("Ground"))
@@ -101,7 +112,31 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnCollisionExit(Collision other)
+    {
+        IsGrounded = false;
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Deadly"))
+        {
+            // Expend a power (gained from donuts) to kill the enemy
+            if (power > 0)
+            {
+                other.gameObject.SetActive(false);
+                power--;
+            }
+            // Game over
+            else
+            { 
+                SceneManager.LoadScene("Stage2");
+            }
+        }
+    }
+
     private bool IsGrounded { get; set; }
+    public int power = 3;
 
     void UpdateCountText()
     {

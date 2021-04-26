@@ -1,7 +1,14 @@
-Enemies ( coroutines + (s)lerp for simple chasers )
-
-Abilities (jumping, weapons)
-
 Hazards 
 
-Stages (Menu + level select)
+lock axes to traverse obstacles
+
+
+textures / tile maps
+
+
+
+2D game
+
+Make swaying tree
+
+
