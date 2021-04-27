@@ -4,6 +4,7 @@ using DefaultNamespace;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -106,9 +107,19 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionStay(Collision other)
     {
-        if (other.collider.CompareTag("Ground"))
+        ContactPoint[] contacts = new ContactPoint[10];
+        int nContacts = other.GetContacts(contacts);
+
+        var playerBottom = transform.position.y - (transform.lossyScale.y / 2);
+
+        for (int i = 0; i < nContacts; i++)
         {
-            this.IsGrounded = true;
+            var contact = contacts[i];
+            if (Mathf.Approximately(contact.point.y, playerBottom))
+            {
+                IsGrounded = true;
+                break;
+            }
         }
     }
 
@@ -131,6 +142,7 @@ public class PlayerController : MonoBehaviour
             else
             { 
                 SceneManager.LoadScene("Stage2");
+                Objective.Reset();
             }
         }
     }

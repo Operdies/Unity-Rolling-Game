@@ -5,9 +5,23 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+public static class DumbExtensions
+{
+    public static void InvokeAll(this IEnumerable<Action> actions)
+    {
+        foreach (var action in actions)
+        {
+            action.Invoke();
+        }
+    }
+}
 public class XRayCamera : MonoBehaviour
 {
     public GameObject Player;
+    [Range(0, 1)]
+    public float XRayAmount = 0.5f;
+
+    private float Transparency => 1 - XRayAmount;
 
     private void Start()
     {
@@ -17,12 +31,12 @@ public class XRayCamera : MonoBehaviour
 
     private IEnumerator XRay()
     {
-        RaycastHit[] previous = null;
-        
+        Action[] restore = new Action[] { };
+
         while (gameObject.activeSelf)
         {
-            if (previous?.Length > 0)
-                Restore(previous);
+            restore.InvokeAll();
+
             var cameraPosition = transform.position;
             var playerPosition = Player.transform.position;
 
@@ -45,32 +59,41 @@ public class XRayCamera : MonoBehaviour
                 return false;
             }).ToArray();
 
-            MakeTransparent(items);
-            previous = items;
+            restore = MakeTransparent(items);
 
             yield return new WaitForSeconds(0.05f);
         }
-        
-        yield break;
     }
 
-    private void MakeTransparent(RaycastHit[] obstructions)
+    /// <summary>
+    /// Make obstacles transparent
+    /// Return array of methods to restore previous state
+    /// </summary>
+    /// <param name="obstructions"></param>
+    /// <returns></returns>
+    private Action[] MakeTransparent(RaycastHit[] obstructions)
     {
+        var restore = new List<Action>();
         foreach (var obstruction in obstructions)
         {
-            var obstructionRenderer = obstruction.transform.gameObject.GetComponent<MeshRenderer>();
+            var obstructionRenderer = obstruction.transform.gameObject.GetComponent<Renderer>();
             if (obstructionRenderer != null)
-                obstructionRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+            {
+                var material = obstructionRenderer.material;
+                var materialColor = material.color;
+                var previousAlpha = materialColor.a;
+                
+                materialColor.a = Transparency;
+                material.color = materialColor;
+                
+                restore.Add(() =>
+                {
+                    materialColor.a = previousAlpha;
+                    material.color = materialColor;
+                });
+            }
         }
-    }
 
-    private void Restore(RaycastHit[] obstructions)
-    {
-        foreach (var obstruction in obstructions)
-        {
-            var obstructionRenderer = obstruction.transform.gameObject.GetComponent<MeshRenderer>();
-            if (obstructionRenderer != null)
-                obstructionRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-        }        
+        return restore.ToArray();
     }
 }
