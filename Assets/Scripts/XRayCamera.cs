@@ -83,6 +83,9 @@ public class XRayCamera : MonoBehaviour
                 var materialColor = material.color;
                 var previousAlpha = materialColor.a;
                 
+                if (previousAlpha <= Transparency)
+                    continue;
+
                 materialColor.a = Transparency;
                 material.color = materialColor;
                 
