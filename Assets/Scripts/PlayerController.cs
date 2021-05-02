@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
+using System.Linq;
+using System.Reflection;
 using DefaultNamespace;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
@@ -24,7 +25,7 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem ParticleSystem { get; set; }
     public Quaternion StartRotation { get; set; }
     void Start()
-    {        
+    {           
         WinTextObj.SetActive(false);
         rb = GetComponent<Rigidbody>();
         ParticleSystem = GetComponentInChildren<ParticleSystem>();
@@ -34,6 +35,11 @@ public class PlayerController : MonoBehaviour
         Objective.OnRegister += UpdateCountText;
         Objective.OnCollected += OnCollected;
 
+        PlayerJumped += () =>
+        {
+            rb.AddForce(JumpHeight * Vector3.up);
+        };
+
         UpdateCountText();
     }
 
@@ -42,7 +48,7 @@ public class PlayerController : MonoBehaviour
         power += 1;
         if (this.ParticleSystem.isPlaying)
         {
-            StartCoroutine(nameof(EaseScale));
+            PowerUp(1.15f);
         }
         else
             this.ParticleSystem.Play();
@@ -50,9 +56,13 @@ public class PlayerController : MonoBehaviour
         UpdateCountText();
     }
 
-    IEnumerator EaseScale()
+    public void PowerUp(float factor)
     {
-        var factor = 1.15f;
+        StartCoroutine(nameof(EaseScale), factor);
+    }
+
+    IEnumerator EaseScale(float factor)
+    {
         var iterations = 10;
         var each = math.pow(factor, 1.0f / iterations);
         var easeDuration = 1.0f; // seconds
@@ -81,12 +91,23 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (transform.position.y < -200f)
+        {
+            rb.velocity *= 0;
+            rb.MovePosition(new Vector3(2, -2, 2) * -1);
+        }
+
         var movement = new Vector3(movementX, 0, movementY) * Speed;
-        movement.y = this.didJump ? JumpHeight : 0.0f;
-        
+        if (this.didJump)
+        {
+            PlayerJumped?.Invoke();
+            this.didJump = false;
+        }
+
         rb.AddForce(movement);
-        this.didJump = false;        
     }
+
+    private Action PlayerJumped;
 
     void OnMove(InputValue movementValue)
     {
@@ -104,6 +125,8 @@ public class PlayerController : MonoBehaviour
     {
         pauseScreen.OnPause();
     }
+    
+    
 
     private void OnCollisionStay(Collision other)
     {
@@ -115,12 +138,19 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < nContacts; i++)
         {
             var contact = contacts[i];
-            if (Mathf.Approximately(contact.point.y, playerBottom))
+            if (math.distance((float) contact.point.y, playerBottom) < 0.01f)
             {
+                if (other.transform.gameObject.CompareTag("TerrainWithGrass"))
+                    GrassIncident(other.transform.gameObject);
                 IsGrounded = true;
                 break;
             }
         }
+    }
+
+    private void GrassIncident(GameObject go)
+    {
+        var playerPos = transform.position;
     }
 
     private void OnCollisionExit(Collision other)
@@ -144,6 +174,45 @@ public class PlayerController : MonoBehaviour
                 SceneManager.LoadScene("Stage2");
                 Objective.Reset();
             }
+        }
+    }
+
+    private void Launch()
+    {
+        rb.velocity *= 0;
+        rb.AddForce(LaunchHeight * LaunchDirection);
+        PlayerJumped -= Launch;
+        IsGrounded = false;
+        
+    }
+
+
+    [Range(100, 8000)]
+    public float LaunchHeight;
+
+    private bool LaunchStored =>
+        PlayerJumped?.GetInvocationList().Any(i => i.GetMethodInfo().Name == nameof(Launch)) == true;
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("BlackHole"))
+        {
+            LaunchDirection = (transform.position - other.gameObject.transform.position).normalized;
+            IsGrounded = true;
+            if (LaunchStored == false)
+                PlayerJumped += Launch;
+        }
+    }
+
+    private Vector3 LaunchDirection { get; set; }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("BlackHole"))
+        {
+            IsGrounded = false;
+            if (LaunchStored)
+                PlayerJumped -= Launch;
         }
     }
 

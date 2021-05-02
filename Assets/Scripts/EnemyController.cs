@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 public class EnemyController : MonoBehaviour
 {
@@ -23,10 +19,10 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
-        var transformPosition = transform.position;
-        var t = Target.transform;
+        var ownPosition = transform.position;
+        var target = Target.transform;
         
-        Vector3 targetDirection = (t.position - transformPosition).normalized;
+        Vector3 targetDirection = (target.position - ownPosition).normalized;
         var targetRotation = Quaternion.LookRotation(targetDirection);
 
         var direction = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * Torque);

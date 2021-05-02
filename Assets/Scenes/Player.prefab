@@ -162,6 +162,8 @@ MonoBehaviour:
   JumpHeight: 60
   countText: {fileID: 0}
   WinTextObj: {fileID: 0}
+  LaunchHeight: 0
+  power: 3
 --- !u!1001 &4985214071004600686
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -178,6 +180,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4270207998540322831, guid: 0ecf7f442aa5a2843b057695c9d81bd0, type: 3}
+      propertyPath: simulationSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4270207998540322831, guid: 0ecf7f442aa5a2843b057695c9d81bd0, type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4270207998540322831, guid: 0ecf7f442aa5a2843b057695c9d81bd0, type: 3}
       propertyPath: SizeBySpeedModule.enabled
       value: 1
       objectReference: {fileID: 0}
@@ -186,8 +196,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4270207998540322831, guid: 0ecf7f442aa5a2843b057695c9d81bd0, type: 3}
+      propertyPath: ExternalForcesModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4270207998540322831, guid: 0ecf7f442aa5a2843b057695c9d81bd0, type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 4270207998540322831, guid: 0ecf7f442aa5a2843b057695c9d81bd0, type: 3}
       propertyPath: InitialModule.gravityModifier.scalar
-      value: 0.001
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: 4270207998540322831, guid: 0ecf7f442aa5a2843b057695c9d81bd0, type: 3}
+      propertyPath: ExternalForcesModule.multiplierCurve.scalar
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8678067021057718108, guid: 0ecf7f442aa5a2843b057695c9d81bd0, type: 3}
       propertyPath: m_RootOrder
