@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (transform.position.y < -200f)
+        if (transform.position.y < -50f)
         {
             rb.velocity *= 0;
             rb.MovePosition(new Vector3(2, -2, 2) * -1);

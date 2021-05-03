@@ -79,6 +79,8 @@ public class XRayCamera : MonoBehaviour
             if (obstructionRenderer != null)
             {
                 var material = obstructionRenderer.material;
+                if (material.HasProperty("color") == false)
+                    continue;
                 var materialColor = material.color;
                 var previousAlpha = materialColor.a;
                 
