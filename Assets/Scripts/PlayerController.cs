@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private float movementX;
     private float movementY;
+    public bool JumpingEnabled = true;
+    [Range(0, 100)]
     public float Speed = 0;
     public float JumpHeight = 200;
     public TextMeshProUGUI countText;

@@ -10,7 +10,7 @@ public class TriggerMoveObject : MonoBehaviour
     public Vector3 Direction;
     public float MaxDistance;
     public float Speed;
-    public Vector3 startLocation { get; set; }
+    private Vector3 startLocation;
 
     private void Start()
     {
