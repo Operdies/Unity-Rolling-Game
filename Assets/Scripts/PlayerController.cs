@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
         power += 1;
         if (this.ParticleSystem.isPlaying)
         {
-            PowerUp(1.15f);
+            PowerUp(1.08f);
         }
         else
             this.ParticleSystem.Play();
@@ -98,6 +98,8 @@ public class PlayerController : MonoBehaviour
         }
 
         var movement = new Vector3(movementX, 0, movementY) * Speed;
+        var torque = new Vector3(movementY, 0, -movementX) * Speed;
+        
         if (this.didJump)
         {
             PlayerJumped?.Invoke();
@@ -105,6 +107,7 @@ public class PlayerController : MonoBehaviour
         }
 
         rb.AddForce(movement);
+        rb.AddTorque(torque);
     }
 
     private Action PlayerJumped;
@@ -133,12 +136,10 @@ public class PlayerController : MonoBehaviour
         ContactPoint[] contacts = new ContactPoint[10];
         int nContacts = other.GetContacts(contacts);
 
-        var playerBottom = transform.position.y - (transform.lossyScale.y / 2);
-
         for (int i = 0; i < nContacts; i++)
         {
             var contact = contacts[i];
-            if (math.distance((float) contact.point.y, playerBottom) < 0.01f)
+            // if (math.distance((float) contact.point.y, playerBottom) < 0.01f)
             {
                 if (other.transform.gameObject.CompareTag("TerrainWithGrass"))
                     GrassIncident(other.transform.gameObject);

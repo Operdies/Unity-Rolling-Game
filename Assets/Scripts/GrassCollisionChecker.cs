@@ -109,7 +109,7 @@ public class GrassCollisionChecker : MonoBehaviour
         if (GrassCollected % (TotalGrass / 1000) == 0)
         {
             player.gameObject.transform.localScale *= 1.002f;
-            player.gameObject.GetComponent<PlayerController>().PowerUp(1.02f);
+            player.gameObject.GetComponent<PlayerController>().PowerUp(1.01f);
         }
     }
 }

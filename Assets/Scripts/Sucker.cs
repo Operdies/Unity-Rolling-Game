@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class Sucker : MonoBehaviour
 {
@@ -11,11 +14,17 @@ public class Sucker : MonoBehaviour
     GameObject Player { get; set; }
     Rigidbody rb { get; set; }
     private float snapped { get; set; }
+    public Volume PostProcessingVolume { get; set; }
+    public float ColliderRadius { get; set; }
+    public float PlayerColliderRadius { get; set; }
 
     void Start()
     {
         Player = GameObject.Find("Player");
         rb = Player.GetComponent<Rigidbody>();
+        PostProcessingVolume = GameObject.Find("PostProcessing").GetComponent<Volume>();
+        ColliderRadius = GetComponent<SphereCollider>().radius;
+        PlayerColliderRadius = Player.GetComponent<SphereCollider>().radius;
     }
 
     IEnumerator MovePlayerIntoHole(Vector3 holePosition)
@@ -34,14 +43,35 @@ public class Sucker : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if (snapped > 0)
+        if (other.gameObject.CompareTag("Player"))
         {
-            snapped = -1;
-            // StartCoroutine(MovePlayerIntoHole(transform.position));
+            if (PostProcessingVolume.profile.TryGet<MotionBlur>(out var mb))
+            {
+                var holePosition = transform.position;
+                var distance = Vector3.Distance(other.ClosestPoint(holePosition), holePosition);
+                float intensity = math.max(0.3f, 1.0f - math.log2(distance + 0.5f));
+                mb.intensity.value = intensity;
+            }
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            if (PostProcessingVolume.profile.TryGet<MotionBlur>(out var mb))
+            {
+                mb.intensity.value = 0.3f;
+            }
+        }
+    }
+    
+    private float GetDistance(Vector3 playerPosition) => Vector3.Distance(transform.position, playerPosition);
+
+    private float GetColliderDistance(Vector3 playerPosition) =>
+        GetDistance(playerPosition) - PlayerColliderRadius;
 
     private void Update()
     {
@@ -49,10 +79,10 @@ public class Sucker : MonoBehaviour
         var G = 200f * Time.deltaTime;
         var holePosition = transform.position;
         var playerPosition = Player.transform.position;
-        
-        var r = Vector3.Distance(holePosition, playerPosition);
 
-        const float playerWeight = 1;
+        var r = GetDistance(playerPosition);
+
+        float playerWeight = 1;
 
         // F = (GMm)/(^2
         var F = (G * playerWeight * Mass) / (r*r);
